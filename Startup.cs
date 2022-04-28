@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.HttpOverrides;
+using WebApiMS.Extensions;
 
 namespace WebApiMS
 {
@@ -27,6 +29,8 @@ namespace WebApiMS
         {
 
             services.AddControllers();
+            services.ConfigureCors();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,8 +40,20 @@ namespace WebApiMS
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            else
+            {
+                app.UseHsts();
+            }
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
+            app.UseCors("CorsPolicy");
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            });
 
             app.UseRouting();
 
