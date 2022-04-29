@@ -1,5 +1,8 @@
 ﻿using Contracts;
+using Entities;
 using LoggerService;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApiMS.Extensions
@@ -21,5 +24,7 @@ namespace WebApiMS.Extensions
         {
             services.AddScoped<ILoggerManager, LoggerManager>();
         }
+        public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
+            services.AddDbContext<Repository>(options => options.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
     }
 }

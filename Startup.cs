@@ -34,6 +34,7 @@ namespace WebApiMS
             services.AddControllers();
             services.ConfigureCors();
             services.ConfigureLoggerService();
+            services.ConfigureSqlContext(Configuration);
             
         }
 
