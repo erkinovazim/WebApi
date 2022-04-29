@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.HttpOverrides;
 using WebApiMS.Extensions;
+using NLog;
+using System.IO;
 
 namespace WebApiMS
 {
@@ -19,6 +21,7 @@ namespace WebApiMS
     {
         public Startup(IConfiguration configuration)
         {
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -30,6 +33,7 @@ namespace WebApiMS
 
             services.AddControllers();
             services.ConfigureCors();
+            services.ConfigureLoggerService();
             
         }
 

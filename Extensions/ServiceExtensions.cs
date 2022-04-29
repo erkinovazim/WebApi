@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Contracts;
+using LoggerService;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace WebApiMS.Extensions
 {
@@ -11,10 +13,13 @@ namespace WebApiMS.Extensions
             {
                 options.AddPolicy("CorsPolicy", builder =>
                 builder.AllowAnyOrigin()
-                .AllowCredentials()
                 .AllowAnyMethod()
                 .AllowAnyHeader());
             });
+        }
+        public static void ConfigureLoggerService(this IServiceCollection services)
+        {
+            services.AddScoped<ILoggerManager, LoggerManager>();
         }
     }
 }
