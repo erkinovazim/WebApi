@@ -25,6 +25,7 @@ namespace WebApiMS.Extensions
             services.AddScoped<ILoggerManager, LoggerManager>();
         }
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
-            services.AddDbContext<Repository>(options => options.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
+            services.AddDbContext<Repository>(options => options.UseSqlServer(configuration.GetConnectionString("sqlConnection"), b=>b.MigrationsAssembly("WebApiMS")));
+            // migration assembly is not in our main project , it is located in Entites class so we should provide our database to this method 
     }
 }
