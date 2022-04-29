@@ -35,6 +35,7 @@ namespace WebApiMS
             services.ConfigureCors();
             services.ConfigureLoggerService();
             services.ConfigureSqlContext(Configuration);
+            services.ConfigureRepositoryManager();
             
         }
 

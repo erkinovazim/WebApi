@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace WebApiMS.Migrations
 {
-    [DbContext(typeof(Repository))]
+    [DbContext(typeof(RepositoryContext))]
     partial class RepositoryModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

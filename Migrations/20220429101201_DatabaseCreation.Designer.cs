@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace WebApiMS.Migrations
 {
-    [DbContext(typeof(Repository))]
+    [DbContext(typeof(RepositoryContext))]
     [Migration("20220429101201_DatabaseCreation")]
     partial class DatabaseCreation
     {

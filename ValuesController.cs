@@ -10,6 +10,11 @@ namespace WebApiMS
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly IRepositoryManager _repositoryManager;
+        public ValuesController(IRepositoryManager repositoryManager)
+        {
+            _repositoryManager = repositoryManager;
+        }
         private ILoggerManager _logger;
         public ValuesController(ILoggerManager logger)
         {
@@ -25,5 +30,6 @@ namespace WebApiMS
 
             return new string[] {"value1","value2"};
         }
+        
     }
 }
