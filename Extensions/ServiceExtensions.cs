@@ -30,7 +30,7 @@ namespace WebApiMS.Extensions
             // migration assembly is not in our main project , it is located in Entites class so we should provide our database to this method 
         public static void ConfigureRepositoryManager(this IServiceCollection services)
         {
-            services.AddScoped<IRepositoryManager, RepositoryManager>();
+            services.AddScoped<IRepositoryManager, iRepositoryManager>();
         }
     }
 }

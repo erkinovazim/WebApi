@@ -11,12 +11,12 @@ namespace WebApiMS.Controllers
 {
     [Route("api/companies")]
     [ApiController]
-    public class CompanyEmployees : ControllerBase
+    public class CompanyController : ControllerBase
     {
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        public CompanyEmployees(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public CompanyController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
         {
             _repository= repository;   
             _logger= logger;
@@ -30,6 +30,21 @@ namespace WebApiMS.Controllers
                 var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
                 return Ok(companiesDto);         
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetCompany(Guid id)
+        {
+            var company = _repository.Company.GetCompany(id, trackChanges: false);
+            if(company == null)
+            {
+                _logger.LogInfo($"Company with id : {id} does not exit in the database");
+                return NotFound();
+            }
+            else
+            {
+                var companyDto = _mapper.Map<CompanyDto>(company);
+                return Ok(companyDto);
+            }
         }
     }
 }
