@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using WebApiMS.Extensions;
 using NLog;
 using System.IO;
+using Contracts;
 
 namespace WebApiMS
 {
@@ -41,7 +42,7 @@ namespace WebApiMS
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerManager logger)
         {
             if (env.IsDevelopment())
             {
@@ -51,6 +52,9 @@ namespace WebApiMS
             {
                 app.UseHsts();
             }
+
+            app.ConfigureExceptionHandler(logger);
+
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
