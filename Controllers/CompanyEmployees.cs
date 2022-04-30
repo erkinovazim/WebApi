@@ -1,7 +1,9 @@
 ﻿using Contracts;
+using Entities.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 
 namespace WebApiMS.Controllers
 {
@@ -22,7 +24,13 @@ namespace WebApiMS.Controllers
             try
             {
                 var companies = _repository.Company.GetAllCompanies(trackChanges: false);
-                return Ok(companies);
+                var companiesDto = companies.Select(c => new CompanyDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    FullAdress = string.Join(' ',c.Address,c.Country)
+                }).ToList();
+                return Ok(companiesDto);
             }
             catch(Exception ex)
             {
