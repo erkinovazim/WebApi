@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Repository;
 using System;
 using System.Collections.Generic;
 
