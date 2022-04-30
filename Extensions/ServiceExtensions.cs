@@ -32,5 +32,7 @@ namespace WebApiMS.Extensions
         {
             services.AddScoped<IRepositoryManager, iRepositoryManager>();
         }
+        public static IMvcBuilder AddCustomCSVFormatter(this IMvcBuilder mvcBuilder) => 
+            mvcBuilder.AddMvcOptions(config => config.OutputFormatters.Add(new CsvOutputFormatter()));
     }
 }
