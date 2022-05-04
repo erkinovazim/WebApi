@@ -8,6 +8,7 @@ using WebApiMS.Extensions;
 using NLog;
 using System.IO;
 using Contracts;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiMS
 {
@@ -35,8 +36,14 @@ namespace WebApiMS
             {
                 config.RespectBrowserAcceptHeader = true;
                 config.ReturnHttpNotAcceptable = true;
-            }).AddXmlDataContractSerializerFormatters().AddCustomCSVFormatter();
-            
+            }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters().AddCustomCSVFormatter();
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+            services.AddScoped<ValidationFilterAttribute>();
+            services.AddScoped<ValidateCompanyExistsAttribute>();
+            services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

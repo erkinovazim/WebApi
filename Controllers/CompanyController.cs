@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using WebApiMS.ModelBinders;
 
 namespace WebApiMS.Controllers
@@ -25,18 +26,18 @@ namespace WebApiMS.Controllers
             _mapper= mapper;
         }
         [HttpGet]
-        public IActionResult GetCompanies()
+        public async Task<IActionResult> GetCompaniesAsync()
         {
-                var companies = _repository.Company.GetAllCompanies(trackChanges: false);
+                var companies =await _repository.Company.GetAllCompaniesAsync(trackChanges: false);
 
                 var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
                 return Ok(companiesDto);         
         }
         [HttpGet("{id}", Name ="CompanyById")] // Name will come in handy in the action method for creating a new company 
-        public IActionResult GetCompany(Guid id)
+        public async Task<IActionResult> GetCompanyAsync(Guid id)
         {
-            var company = _repository.Company.GetCompany(id, trackChanges: false);
+            var company =await _repository.Company.GetCompanyAsync(id, trackChanges: false);
             if(company == null)
             {
                 _logger.LogInfo($"Company with id : {id} does not exit in the database");
@@ -49,7 +50,7 @@ namespace WebApiMS.Controllers
             }
         }
         [HttpGet("collection/{ids}",Name ="GetCompanyCollection")]
-        public IActionResult GetCompanyCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))]IEnumerable<Guid> ids)
+        public async Task<IActionResult> GetCompanyCollectionAsync([ModelBinder(BinderType = typeof(ArrayModelBinder))]IEnumerable<Guid> ids)
         {
             // ArrayModelBinder will convert sent spring parameter to IEnumerable<Guid> type
             if (ids == null)
@@ -57,7 +58,7 @@ namespace WebApiMS.Controllers
                 _logger.LogError("Parameter ids is null");
                 return BadRequest("Parameter ids is null");
             }
-            var companyEntities = _repository.Company.GetByIds(ids, trackChanges: false);
+            var companyEntities =await _repository.Company.GetByIdsAsync(ids, trackChanges: false);
             if(ids.Count()!=companyEntities.Count())
             {
                 _logger.LogError("Some ids are not valid in a collection");
@@ -67,22 +68,17 @@ namespace WebApiMS.Controllers
             return Ok(companiesToReturn);
         }
         [HttpPost]
-        public IActionResult CreateCompany([FromBody] CompanyForCreationDto company)
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> CreateCompanyAsync([FromBody] CompanyForCreationDto company)
         {
-            if (company == null)
-            {
-                _logger.LogError("CompanyForCreationDto object sent from clinet is null");
-                return BadRequest();
-            }
             var companyEntity = _mapper.Map<Company>(company);
             _repository.Company.CreateCompany(companyEntity);
-            _repository.Save();
-
+            await _repository.SaveAsync();
             var companyToReturn =_mapper.Map<CompanyDto>(companyEntity);
             return CreatedAtRoute("CompanyById", new { id = companyToReturn.Id }, companyToReturn);
         }
         [HttpPost("collection")]
-        public IActionResult CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companyCollection)
+        public async Task<IActionResult> CreateCompanyCollectionAsync([FromBody] IEnumerable<CompanyForCreationDto> companyCollection)
         {
             if(companyCollection == null)
             {
@@ -94,7 +90,7 @@ namespace WebApiMS.Controllers
             {
                 _repository.Company.CreateCompany(company);
             }
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var companyCollectionToReturn = _mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
             var ids = string.Join(",", companyCollectionToReturn.Select(c => c.Id));
@@ -102,34 +98,23 @@ namespace WebApiMS.Controllers
             return CreatedAtRoute("GetCompanyCollection",new {ids}, companyCollectionToReturn);
         }
         [HttpDelete("{id}")]
-        public IActionResult DeleteCompany(Guid id)
+        [ServiceFilter(typeof(ValidateCompanyExistsAttribute))]
+        public async Task<IActionResult> DeleteCompanyAsync(Guid id)
         {
-            var company = _repository.Company.GetCompany(id,trackChanges:false);
-            if(company==null)
-            {
-                _logger.LogInfo($"Company with id : {id} doesn't exist in the database");
-                return NotFound();
-            }
+            var company = HttpContext.Items["company"] as Company;
+   
             _repository.Company.DeleteCompany(company);
-            _repository.Save();
+            await _repository.SaveAsync();
             return NoContent();
         }
         [HttpPut("{id}")]
-        public IActionResult UpdateCompany(Guid id, [FromBody] CompanyForUpdateDto company)
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateCompanyExistsAttribute))]
+        public async Task<IActionResult> UpdateCompanyAsync(Guid id, [FromBody] CompanyForUpdateDto company)
         {
-            if(company==null)
-            {
-                _logger.LogError("CompanyForUpdateDto object sent from client is null.");
-                return BadRequest("CompanyForUpdateDto object is null");
-            }
-            var companyEntity = _repository.Company.GetCompany(id, trackChanges: true);
-            if(companyEntity==null)
-            {
-                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var companyEntity = HttpContext.Items["company"] as Company;
             _mapper.Map(company,companyEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
             return NoContent();
         }
     }

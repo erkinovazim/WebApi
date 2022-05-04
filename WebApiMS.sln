@@ -11,7 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "..\LoggerS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "..\Entities\Entities.csproj", "{4E7B2A62-3DB7-451F-A56F-744A595E24FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "..\Repository\Repository.csproj", "{FA6D03BF-08EC-460C-9668-0E1596D4274A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "..\Repository\Repository.csproj", "{FA6D03BF-08EC-460C-9668-0E1596D4274A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ActionFilters", "ActionFilters", "{78B7BBF7-C64A-451D-8FA0-67732C98A5C4}"
+	ProjectSection(SolutionItems) = preProject
+		ValidateCompanyExistsAttribute.cs = ValidateCompanyExistsAttribute.cs
+		ValidateEmployeeForCompanyExistsAttribute.cs = ValidateEmployeeForCompanyExistsAttribute.cs
+		ValidationFilterAttribute.cs = ValidationFilterAttribute.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
